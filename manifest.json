@@ -1,0 +1,23 @@
+{
+  "manifest_version": 2,
+  "name": "productivity",
+  "decription": "it checks your productivity on the web",
+  "version" : "0.0.1",
+  "sidebar_action": {
+    "default_page": "sidebar.html",
+    "default_icon": {              
+        "16": "img/man.png"
+    },
+    "default_title": "Sidebar Test",    
+    "use_navigation_bar": true     
+  },
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "permissions": [
+    "tabs",
+    "activeTab",
+    "storage"
+  ]
+}
