@@ -14,7 +14,7 @@ var fTime = new Date();
 
 function printTimeStamp(startTime, endTime) {
     var a = parseInt((fTime-sTime)/1000 | 0);
-    console.log(a);
+    return a
 }
 
 function getHostName(url) {
@@ -26,23 +26,59 @@ function getHostName(url) {
         return null;
     }
 }
+    document.addEventListener('DOMContentLoaded', function() {
+        var link = document.getElementById('refresh_sync_data');
+        // onClick's logic below:
+        link.addEventListener('click', function() {
+            whale.storage.sync.clear(function() {
+                var error = whale.runtime.lastError;
+                if (error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
 
-function getURLData(url) {
-    chrome.storage.local.get([url], function(result) {
-        return result.key
-        // console.log(result.key);
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var link = document.getElementById('get_all_keyz');
+        // onClick's logic below:
+        link.addEventListener('click', function() {
+            chrome.storage.local.get(null, function(items) {
+                var allKeys = Object.keys(items);
+                console.log(allKeys);
+            });
+        });
+    });
+
+
+function getURLData(storer) {
+    whale.storage.sync.get(storer, function(result) {
+        console.log(result)
+        // console.log('Value currently is ' + result.key);
       });
 }
 
+function setURLData(storer) {
+    whale.storage.sync.set({storer: storer.link}, function() {
+        console.log('Value is set to ' + storer);
+      });
+}
 
-chrome.tabs.onActivated.addListener(function(info) {
-    var tab = chrome.tabs.get(info.tabId, function(tab) {
+whale.tabs.onActivated.addListener(function(info) {
+    var tab = whale.tabs.get(info.tabId, function(tab) {
         // console.log(tab.url);
-        var urlLink = getHostName(tab.url);
-        console.log(urlLink);
+        var storer = new Object();
+        storer.link = getHostName(tab.url);
+        console.log(storer.link);
         fTime = new Date();
-        printTimeStamp(sTime, fTime);
-        difTime = fTime-sTime;
+        storer.diff = printTimeStamp(sTime, fTime);
+        console.log(storer.diff);
+
+        // setURLData(storer);  //Setting the object
+        getURLData(storer);  //Getting the object.i
+
         sTime = fTime;
     });
 });
